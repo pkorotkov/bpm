@@ -23,18 +23,19 @@ func newSearchResults() SearchResults {
 	return srs
 }
 
-func (sr SearchResults) putOne(r []byte, p int64) SearchResults {
-	sr[string(r)] = append(sr[string(r)], p)
+func (sr SearchResults) putOne(pattern []byte, position int64) SearchResults {
+	sr[string(pattern)] = append(sr[string(pattern)], position)
 	return sr
 }
 
-func (sr SearchResults) putMany(r []byte, ps []int64) SearchResults {
-	sr[string(r)] = append(sr[string(r)], ps...)
+func (sr SearchResults) putMany(pattern []byte, positions []int64) SearchResults {
+	sr[string(pattern)] = append(sr[string(pattern)], positions...)
 	return sr
 }
 
-func (sr SearchResults) Get(r []byte) []int64 {
-	return sr[string(r)]
+// Get returns positions of the given byte pattern.
+func (sr SearchResults) Get(pattern []byte) []int64 {
+	return sr[string(pattern)]
 }
 
 type SearchEngine interface {
