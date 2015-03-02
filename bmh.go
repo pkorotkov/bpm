@@ -31,7 +31,7 @@ func (bmh *_BMHSearchEngine) FindAllOccurrences(pattern []byte) (srs SearchResul
 		// Difference in data and pattern length.
 		ld int64 = dl - pl
 		// Last pattern's byte position.
-		lpbp int64         = pl - 1
+		lpbp int64 = pl - 1
 	)
 	for i = 0; i < 256; i++ {
 		badChars[i] = pl
@@ -50,6 +50,6 @@ func (bmh *_BMHSearchEngine) FindAllOccurrences(pattern []byte) (srs SearchResul
 		}
 		index += badChars[bmh.bfr.ReadByteAt(index+lpbp)]
 	}
-	srs = NewSearchResults().putMany(pattern, indices)
+	srs = newSearchResults().putMany(pattern, indices)
 	return
 }

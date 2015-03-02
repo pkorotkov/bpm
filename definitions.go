@@ -18,7 +18,7 @@ func init() {
 
 type SearchResults map[string][]int64
 
-func NewSearchResults() SearchResults {
+func newSearchResults() SearchResults {
 	srs := make(map[string][]int64)
 	return srs
 }

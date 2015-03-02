@@ -105,7 +105,7 @@ func (ac *_ACSearchEngine) FindAllOccurrences(patterns [][]byte) (srs SearchResu
 		index int64
 		dl    int64 = ac.bfr.FileSize()
 	)
-	srs = NewSearchResults()
+	srs = newSearchResults()
 	ac.buildTree(patterns)
 	rt := ac.root
 	for index < dl {

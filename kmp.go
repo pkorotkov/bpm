@@ -79,6 +79,6 @@ func (kmp *_KMPSearchEngine) FindAllOccurrences(pattern []byte) (srs SearchResul
 			}
 		}
 	}
-	srs = NewSearchResults().putMany(pattern, indices)
+	srs = newSearchResults().putMany(pattern, indices)
 	return
 }
