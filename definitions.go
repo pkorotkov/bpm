@@ -1,9 +1,9 @@
 package bpm
 
 var Algorithms struct {
+	AC  string
 	BMH string
 	KMP string
-	AC  string
 }
 
 func init() {
