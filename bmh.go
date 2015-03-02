@@ -5,7 +5,12 @@ import (
 )
 
 type _BMHSearchEngine struct {
-	bfr *bufferedFileReader
+	name string
+	bfr  *bufferedFileReader
+}
+
+func (bmh *_BMHSearchEngine) Name() string {
+	return bmh.name
 }
 
 func (bmh *_BMHSearchEngine) SetFile(fp string) (err error) {

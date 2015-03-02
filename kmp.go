@@ -5,7 +5,12 @@ import (
 )
 
 type _KMPSearchEngine struct {
-	bfr *bufferedFileReader
+	name string
+	bfr  *bufferedFileReader
+}
+
+func (kmp *_KMPSearchEngine) Name() string {
+	return kmp.name
 }
 
 func (kmp *_KMPSearchEngine) SetFile(fp string) (err error) {

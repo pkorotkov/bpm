@@ -4,16 +4,16 @@ import (
 	"fmt"
 )
 
-var Algorithm struct {
+var Algorithms struct {
 	BMH string
 	KMP string
 	AC  string
 }
 
 func init() {
-	Algorithm.BMH = "Boyer–Moore–Horspool"
-	Algorithm.KMP = "Knuth–Morris–Pratt"
-	Algorithm.AC = "Aho-Corasick"
+	Algorithms.BMH = "Boyer–Moore–Horspool"
+	Algorithms.KMP = "Knuth–Morris–Pratt"
+	Algorithms.AC = "Aho-Corasick"
 }
 
 type SearchResults map[string][]int64
@@ -39,7 +39,8 @@ func (sr SearchResults) Get(pattern []byte) []int64 {
 }
 
 type SearchEngine interface {
-	SetFile(fp string) error
+	Name() string
+	SetFile(filePath string) error
 }
 
 type SinglePatternSearchEngine interface {
@@ -54,12 +55,12 @@ type MultiplePatternSearchEngine interface {
 
 func NewSearchEngine(alg string) (SearchEngine, error) {
 	switch alg {
-	case Algorithm.BMH:
-		return &_BMHSearchEngine{}, nil
-	case Algorithm.KMP:
-		return &_KMPSearchEngine{}, nil
-	case Algorithm.AC:
-		return &_ACSearchEngine{}, nil
+	case Algorithms.BMH:
+		return &_BMHSearchEngine{name: alg}, nil
+	case Algorithms.KMP:
+		return &_KMPSearchEngine{name: alg}, nil
+	case Algorithms.AC:
+		return &_ACSearchEngine{name: alg}, nil
 	default:
 		return nil, fmt.Errorf("unknown algorithm")
 	}

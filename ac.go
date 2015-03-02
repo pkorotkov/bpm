@@ -32,8 +32,13 @@ func (tn *treeNode) addTransition(n *treeNode) {
 }
 
 type _ACSearchEngine struct {
+	name string
 	bfr  *bufferedFileReader
 	root *treeNode
+}
+
+func (ac *_ACSearchEngine) Name() string {
+	return ac.name
 }
 
 func (ac *_ACSearchEngine) SetFile(fp string) (err error) {
