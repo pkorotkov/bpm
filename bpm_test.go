@@ -33,30 +33,57 @@ func createRandomFile() (err error) {
 func TestAlgorithms(t *testing.T) {
 	var (
 		err      error
-		se       SearchEngine
 		srs      SearchResults
 		patterns [][]byte
 	)
 	for _, sp := range spatterns {
 		patterns = append(patterns, []byte(sp))
 	}
-    // Aho-Corasick.
-	se = NewSearchEngine(Algorithms.AC)
-	if err = se.SetFile(randomFilePath); err != nil {
+	// Test Aho-Corasick.
+	ac := NewSearchEngine(Algorithms.AC).(MultiplePatternSearchEngine)
+	if err = ac.SetFile(randomFilePath); err != nil {
 		t.Fatal(err)
 	}
-	ac := se.(MultiplePatternSearchEngine)
 	ac.PreprocessPatterns(patterns)
 	if srs, err = ac.FindAllOccurrences(); err != nil {
 		t.Fatal(err)
 	}
 	for i := 0; i < 5; i++ {
-		fps := srs.Get(patterns[i])
-		sps := samplePositions[spatterns[i]]
+		fps, sps := srs.Get(patterns[i]), samplePositions[spatterns[i]]
 		for k, fp := range fps {
 			if sp := sps[k]; fp != sp {
-				t.Errorf("comparison is broken: expected %d but given with %d", sp, fp)
+				t.Errorf("[AC] position comparison is broken: expected %d but encountered %d", sp, fp)
 			}
+		}
+	}
+	// Test Boyer–Moore–Horspool.
+	bmh := NewSearchEngine(Algorithms.BMH).(SinglePatternSearchEngine)
+	if err = bmh.SetFile(randomFilePath); err != nil {
+		t.Fatal(err)
+	}
+	bmh.PreprocessPattern(patterns[2])
+	if srs, err = bmh.FindAllOccurrences(); err != nil {
+		t.Fatal(err)
+	}
+	fps, sps := srs.Get(patterns[2]), samplePositions[spatterns[2]]
+	for k, fp := range fps {
+		if sp := sps[k]; fp != sp {
+			t.Errorf("[BMH] position comparison is broken: expected %d but encountered %d", sp, fp)
+		}
+	}
+	// Test Knuth–Morris–Pratt.
+	kmp := NewSearchEngine(Algorithms.KMP).(SinglePatternSearchEngine)
+	if err = kmp.SetFile(randomFilePath); err != nil {
+		t.Fatal(err)
+	}
+	kmp.PreprocessPattern(patterns[3])
+	if srs, err = kmp.FindAllOccurrences(); err != nil {
+		t.Fatal(err)
+	}
+	fps, sps = srs.Get(patterns[3]), samplePositions[spatterns[3]]
+	for k, fp := range fps {
+		if sp := sps[k]; fp != sp {
+			t.Errorf("[KMP] position comparison is broken: expected %d but encountered %d", sp, fp)
 		}
 	}
 }
