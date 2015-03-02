@@ -1,8 +1,4 @@
-package bmp
-
-import (
-	"fmt"
-)
+package bpm
 
 var Algorithms struct {
 	BMH string
@@ -43,25 +39,45 @@ type SearchEngine interface {
 	SetFile(filePath string) error
 }
 
+type _BaseEngine struct {
+	name string
+	bfr  *bufferedFileReader
+}
+
+func (be *_BaseEngine) Name() string {
+	return be.name
+}
+
+func (be *_BaseEngine) SetFile(fp string) (err error) {
+	var bfr *bufferedFileReader
+	if bfr, err = newBufferedFileReader(fp); err != nil {
+		return
+	}
+	be.bfr = bfr
+	return
+}
+
 type SinglePatternSearchEngine interface {
 	SearchEngine
-	FindAllOccurrences(pattern []byte) (SearchResults, error)
+	PreprocessPattern(pattern []byte)
+	FindAllOccurrences() (SearchResults, error)
 }
 
 type MultiplePatternSearchEngine interface {
 	SearchEngine
-	FindAllOccurrences(patterns [][]byte) (SearchResults, error)
+	PreprocessPatterns(patterns [][]byte)
+	FindAllOccurrences() (SearchResults, error)
 }
 
-func NewSearchEngine(alg string) (SearchEngine, error) {
+func NewSearchEngine(alg string) SearchEngine {
 	switch alg {
 	case Algorithms.BMH:
-		return &_BMHSearchEngine{name: alg}, nil
+		return &_BMHSearchEngine{_BaseEngine: &_BaseEngine{name: alg}}
 	case Algorithms.KMP:
-		return &_KMPSearchEngine{name: alg}, nil
+		return &_KMPSearchEngine{_BaseEngine: &_BaseEngine{name: alg}}
 	case Algorithms.AC:
-		return &_ACSearchEngine{name: alg}, nil
+		return &_ACSearchEngine{_BaseEngine: &_BaseEngine{name: alg}}
 	default:
-		return nil, fmt.Errorf("unknown algorithm")
+		return nil
 	}
 }

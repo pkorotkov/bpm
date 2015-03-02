@@ -1,4 +1,4 @@
-package bmp
+package bpm
 
 import (
 	"os"
@@ -12,11 +12,11 @@ type bufferedFileReader struct {
 	bufferPivotPosition int64
 }
 
-func NewBufferedFileReader(fp string) (bfr *bufferedFileReader, err error) {
-	return NewBufferedFileReaderWithSize(fp, 64*1024*1024)
+func newBufferedFileReader(fp string) (bfr *bufferedFileReader, err error) {
+	return newBufferedFileReaderWithSize(fp, 64*1024*1024)
 }
 
-func NewBufferedFileReaderWithSize(fp string, bs int64) (bfr *bufferedFileReader, err error) {
+func newBufferedFileReaderWithSize(fp string, bs int64) (bfr *bufferedFileReader, err error) {
 	var (
 		bf  *os.File
 		fi  os.FileInfo

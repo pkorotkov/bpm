@@ -1,29 +1,20 @@
-package bmp
+package bpm
 
 import (
 	"fmt"
 )
 
 type _BMHSearchEngine struct {
-	name string
-	bfr  *bufferedFileReader
+	*_BaseEngine
+	pattern []byte
 }
 
-func (bmh *_BMHSearchEngine) Name() string {
-	return bmh.name
+func (bmh *_BMHSearchEngine) PreprocessPattern(pattern []byte) {
+	bmh.pattern = pattern
 }
 
-func (bmh *_BMHSearchEngine) SetFile(fp string) (err error) {
-	var bfr *bufferedFileReader
-	if bfr, err = NewBufferedFileReader(fp); err != nil {
-		return
-	}
-	bmh.bfr = bfr
-	return
-}
-
-func (bmh *_BMHSearchEngine) FindAllOccurrences(pattern []byte) (srs SearchResults, err error) {
-	dl, pl := bmh.bfr.FileSize(), int64(len(pattern))
+func (bmh *_BMHSearchEngine) FindAllOccurrences() (srs SearchResults, err error) {
+	dl, pl := bmh.bfr.FileSize(), int64(len(bmh.pattern))
 	if pl > dl {
 		err = fmt.Errorf("pattern must not be longer than data")
 		return
@@ -42,12 +33,12 @@ func (bmh *_BMHSearchEngine) FindAllOccurrences(pattern []byte) (srs SearchResul
 		badChars[i] = pl
 	}
 	for i = 0; i < lpbp; i++ {
-		badChars[pattern[i]] = lpbp - i
+		badChars[bmh.pattern[i]] = lpbp - i
 	}
 	// Start search.
 	for index <= ld {
 	innerLoop:
-		for i = lpbp; bmh.bfr.ReadByteAt(index+i) == pattern[i]; i-- {
+		for i = lpbp; bmh.bfr.ReadByteAt(index+i) == bmh.pattern[i]; i-- {
 			if i == 0 {
 				indices = append(indices, index)
 				break innerLoop
@@ -55,6 +46,6 @@ func (bmh *_BMHSearchEngine) FindAllOccurrences(pattern []byte) (srs SearchResul
 		}
 		index += badChars[bmh.bfr.ReadByteAt(index+lpbp)]
 	}
-	srs = newSearchResults().putMany(pattern, indices)
+	srs = newSearchResults().putMany(bmh.pattern, indices)
 	return
 }

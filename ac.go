@@ -1,4 +1,4 @@
-package bmp
+package bpm
 
 type treeNode struct {
 	parent  *treeNode
@@ -19,7 +19,7 @@ func newTreeNode(p *treeNode, c byte) *treeNode {
 }
 
 // Adds pattern ending in this node.
-func (tn *treeNode) addResult(r []byte) {
+func (tn *treeNode) AddResult(r []byte) {
 	if _, ok := tn.results[string(r)]; ok {
 		return
 	}
@@ -27,27 +27,17 @@ func (tn *treeNode) addResult(r []byte) {
 }
 
 // adds trabsition node.
-func (tn *treeNode) addTransition(n *treeNode) {
+func (tn *treeNode) AddTransition(n *treeNode) {
 	tn.transitions[n.char] = n
 }
 
 type _ACSearchEngine struct {
-	name string
-	bfr  *bufferedFileReader
+	*_BaseEngine
 	root *treeNode
 }
 
-func (ac *_ACSearchEngine) Name() string {
-	return ac.name
-}
-
-func (ac *_ACSearchEngine) SetFile(fp string) (err error) {
-	var bfr *bufferedFileReader
-	if bfr, err = NewBufferedFileReader(fp); err != nil {
-		return
-	}
-	ac.bfr = bfr
-	return
+func (ac *_ACSearchEngine) PreprocessPatterns(patterns [][]byte) {
+	ac.buildTree(patterns)
 }
 
 // builds tree from specified patterns.
@@ -66,11 +56,11 @@ func (ac *_ACSearchEngine) buildTree(patterns [][]byte) {
 			}
 			if nn == nil {
 				nn = newTreeNode(n, pc)
-				n.addTransition(nn)
+				n.AddTransition(nn)
 			}
 			n = nn
 		}
-		n.addResult(p)
+		n.AddResult(p)
 	}
 	// Find failure functions.
 	var nodes []*treeNode
@@ -93,7 +83,7 @@ func (ac *_ACSearchEngine) buildTree(patterns [][]byte) {
 			} else {
 				n.failure = r.transitions[c]
 				for _, res := range n.failure.results {
-					n.addResult(res)
+					n.AddResult(res)
 				}
 			}
 			for _, tn := range n.transitions {
@@ -105,13 +95,12 @@ func (ac *_ACSearchEngine) buildTree(patterns [][]byte) {
 	ac.root.failure = ac.root
 }
 
-func (ac *_ACSearchEngine) FindAllOccurrences(patterns [][]byte) (srs SearchResults, err error) {
+func (ac *_ACSearchEngine) FindAllOccurrences() (srs SearchResults, err error) {
 	var (
 		index int64
 		dl    int64 = ac.bfr.FileSize()
 	)
 	srs = newSearchResults()
-	ac.buildTree(patterns)
 	rt := ac.root
 	for index < dl {
 		var tn *treeNode
