@@ -7,9 +7,9 @@ var Algorithms struct {
 }
 
 func init() {
+	Algorithms.AC = "Aho-Corasick"
 	Algorithms.BMH = "Boyer–Moore–Horspool"
 	Algorithms.KMP = "Knuth–Morris–Pratt"
-	Algorithms.AC = "Aho-Corasick"
 }
 
 type SearchResults map[string][]int64
@@ -37,6 +37,7 @@ func (sr SearchResults) Get(pattern []byte) []int64 {
 type SearchEngine interface {
 	Name() string
 	SetFile(filePath string) error
+	FindAllOccurrences() (SearchResults, error)
 }
 
 type _BaseEngine struct {
@@ -60,13 +61,11 @@ func (be *_BaseEngine) SetFile(fp string) (err error) {
 type SinglePatternSearchEngine interface {
 	SearchEngine
 	PreprocessPattern(pattern []byte)
-	FindAllOccurrences() (SearchResults, error)
 }
 
 type MultiplePatternSearchEngine interface {
 	SearchEngine
 	PreprocessPatterns(patterns [][]byte)
-	FindAllOccurrences() (SearchResults, error)
 }
 
 func NewSearchEngine(alg string) SearchEngine {
