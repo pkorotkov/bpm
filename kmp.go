@@ -15,8 +15,8 @@ func (kmp *_KMPSearchEngine) PreprocessPattern(pattern []byte) {
 	kmp.computePrefix(pattern)
 }
 
-func (kmp *_KMPSearchEngine) computePrefix(pattern []byte) {
-	pl := len(pattern)
+func (kmp *_KMPSearchEngine) computePrefix() {
+	pl := len(kmp.pattern)
 	if pl == 1 {
 		kmp.prefix = []int64{-1}
 		return
@@ -28,7 +28,7 @@ func (kmp *_KMPSearchEngine) computePrefix(pattern []byte) {
 	kmp.prefix = make([]int64, pl)
 	kmp.prefix[0], kmp.prefix[1] = -1, 0
 	for pos < pl {
-		if pattern[pos-1] == pattern[count] {
+		if kmp.pattern[pos-1] == kmp.pattern[count] {
 			count++
 			kmp.prefix[pos] = count
 			pos++
