@@ -47,7 +47,7 @@ func (kmp *_KMPSearchEngine) computePrefix() {
 func (kmp *_KMPSearchEngine) FindAllOccurrences() (srs SearchResults, err error) {
 	dl, pl := kmp.bfr.FileSize(), int64(len(kmp.pattern))
 	if pl > dl {
-		err = fmt.Errorf("pattern not must be longer than data")
+		err = fmt.Errorf("pattern must not be longer than data")
 		return
 	}
 	var (
