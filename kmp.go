@@ -12,7 +12,7 @@ type _KMPSearchEngine struct {
 
 func (kmp *_KMPSearchEngine) PreprocessPattern(pattern []byte) {
 	kmp.pattern = pattern
-	kmp.computePrefix(pattern)
+	kmp.computePrefix()
 }
 
 func (kmp *_KMPSearchEngine) computePrefix() {
