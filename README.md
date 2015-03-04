@@ -5,3 +5,4 @@ A byte pattern matching library adapted for search in binary files
 
 ## Installation
     go get -u -v -t github.com/pkorotkov/bpm
+    go test github.com/pkorotkov/bpm
