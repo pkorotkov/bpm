@@ -1,16 +1,16 @@
 package bpm
 
-var Algorithms struct {
-	AC  string
-	BMH string
-	KMP string
-}
+type algorithm string
 
-func init() {
-	Algorithms.AC = "Aho-Corasick"
-	Algorithms.BMH = "Boyer–Moore–Horspool"
-	Algorithms.KMP = "Knuth–Morris–Pratt"
-}
+var Algorithms struct {
+	AC  algorithm
+	BMH algorithm
+	KMP algorithm
+} = struct{
+	AC  algorithm
+	BMH algorithm
+	KMP algorithm
+}{"Aho-Corasick", "Boyer–Moore–Horspool", "Knuth–Morris–Pratt"}
 
 type SearchResults map[string][]int64
 
@@ -41,12 +41,12 @@ type SearchEngine interface {
 }
 
 type _BaseEngine struct {
-	name string
+	name algorithm
 	bfr  *bufferedFileReader
 }
 
 func (be *_BaseEngine) Name() string {
-	return be.name
+	return string(be.name)
 }
 
 func (be *_BaseEngine) SetFile(fp string) (err error) {
@@ -68,7 +68,7 @@ type MultiplePatternSearchEngine interface {
 	PreprocessPatterns(patterns [][]byte)
 }
 
-func NewSearchEngine(alg string) SearchEngine {
+func NewSearchEngine(alg algorithm) SearchEngine {
 	switch alg {
 	case Algorithms.BMH:
 		return &_BMHSearchEngine{_BaseEngine: &_BaseEngine{name: alg}}
