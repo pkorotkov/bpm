@@ -2,11 +2,7 @@ package bpm
 
 type algorithm string
 
-var Algorithms struct {
-	AC  algorithm
-	BMH algorithm
-	KMP algorithm
-} = struct{
+var Algorithms = struct{
 	AC  algorithm
 	BMH algorithm
 	KMP algorithm
